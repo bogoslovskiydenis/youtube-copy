@@ -1,0 +1,6 @@
+TODO: [X] - User, Video, Comments
+TODO: [] - Auth
+TODO: [] - Get user , popular channel by subscribers
+TODO: [] - Video add , edit , remove , list (user private)
+TODO: [] - Get all videos , popular by view
+TODO: [] - Video upload

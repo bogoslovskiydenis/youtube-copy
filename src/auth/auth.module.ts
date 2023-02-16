@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common'
-import { AuthService } from './auth.service'
 import { AuthController } from './auth.controller'
 import { TypegooseModule } from 'nestjs-typegoose'
 import { UserModel } from '../user/user.model/user.model'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
-import { getJWTConfig } from '../config/jwt.config'
 import { JwtStrategy } from './strategy/jwt.strategy'
+import { AuthService } from './auth.service'
+import { getJWTConfig } from '../config/jwt.config'
 
 @Module({
 	controllers: [AuthController],

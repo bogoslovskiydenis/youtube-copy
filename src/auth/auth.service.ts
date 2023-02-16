@@ -5,16 +5,16 @@ import {
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { InjectModel } from 'nestjs-typegoose'
-import { UserModel } from '../user/user.model/user.model'
-import { AuthDto } from './dto/auth.dto'
+import { AuthDto } from './auth.dto'
 import { ModelType } from '@typegoose/typegoose/lib/types'
 import { compare, genSalt, hash } from 'bcryptjs'
+import { UserModel } from 'src/user/user.model/user.model'
 
 @Injectable()
 export class AuthService {
 	constructor(
-		@InjectModel(UserModel) private readonly jwtService: JwtService,
-		private readonly UserModel: ModelType<UserModel>,
+		private readonly jwtService: JwtService,
+		@InjectModel(UserModel) private readonly UserModel: ModelType<UserModel>,
 	) {}
 
 	// login
@@ -23,7 +23,7 @@ export class AuthService {
 
 		return {
 			user: this.returnUserFields(user),
-			accessToken: await this.issueAccessToken(String(user.id)),
+			accessToken: await this.issueAccessToken(String(user._id)),
 		}
 	}
 
@@ -42,7 +42,7 @@ export class AuthService {
 
 		return {
 			user: this.returnUserFields(user),
-			accessToken: await this.issueAccessToken(String(user.id)),
+			accessToken: await this.issueAccessToken(String(user._id)),
 		}
 	}
 
@@ -51,21 +51,23 @@ export class AuthService {
 		if (!user) throw new UnauthorizedException('User not found')
 
 		const isValidPassword = await compare(dto.password, user.password)
-		if (!isValidPassword) throw new UnauthorizedException('Ivalid password')
+		if (!isValidPassword) throw new UnauthorizedException('Invalid password')
 
 		return user
 	}
 
 	async issueAccessToken(userId: string) {
-		const data = { id: userId }
-		return await this.jwtService.signAsync(data, {
+		const data = { _id: userId }
+
+		const accessT = await this.jwtService.signAsync(data, {
 			expiresIn: '31',
 		})
+		return { accessT }
 	}
 
 	returnUserFields(user: UserModel) {
 		return {
-			id: user.id,
+			_id: user._id,
 			email: user.email,
 		}
 	}

@@ -9,17 +9,17 @@ import { ModelType } from '@typegoose/typegoose/lib/types'
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
 	constructor(
-		private readonly configServise: ConfigService,
+		private readonly configService: ConfigService,
 		@InjectModel(UserModel) private readonly UserModel: ModelType<UserModel>,
 	) {
 		super({
-			jwtFormRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-			ignoreExpiration: true,
-			secretOrKey: configServise.get('JWT_SECRET'),
+			jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+			ignoreExpiration: false,
+			secretOrKey: configService.get('JWT_SECRET'),
 		})
 	}
 
-	async validate({ id }: Pick<UserModel, 'id'>) {
-		return this.UserModel.findById(id).exec()
+	async validate({ _id }: Pick<UserModel, '_id'>) {
+		return this.UserModel.findById(_id).exec()
 	}
 }
